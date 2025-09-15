@@ -1,0 +1,9 @@
+@TodoList.Server_HostAddress = http://localhost:5000/api/todo
+
+PUT {{TodoList.Server_HostAddress}}
+Content-Type: application/json
+{
+  "id": "6f265a7b-a999-4401-9c25-3c5cb4f2ee8c",
+  "name": "Acheter du pain",
+  "isDone": true
+}

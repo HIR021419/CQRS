@@ -1,0 +1,6 @@
+@TodoList.Server_HostAddress = http://localhost:5000/api/todo
+
+POST {{TodoList.Server_HostAddress}}
+Content-Type: application/json
+
+"Acheter du lait"

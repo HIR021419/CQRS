@@ -1,0 +1,3 @@
+@TodoList.Server_HostAddress = http://localhost:5000/api/todo
+
+GET {{TodoList.Server_HostAddress}}

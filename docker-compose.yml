@@ -1,0 +1,7 @@
+services:
+  todoapi:
+    build: .
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5000:8080"
