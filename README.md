@@ -1,44 +1,73 @@
-# TodoList.Server
+ï»¿# Microservices TODO List
 
-Microservice .NET pour gérer une TODO List, implémentant le pattern CQRS et utilisant Entity Framework Core avec une base de données InMemory.
+Solution composÃ©e de deux microservices en .NET 8 implÃ©mentant le pattern CQRS avec Entity Framework Core (InMemory) et communiquant via RabbitMQ.
+
+* **UserService** : gÃ¨re les utilisateurs et publie des Ã©vÃ©nements (`user.add`, `user.update`) sur RabbitMQ.
+* **TodoService** : gÃ¨re les TODO items et consomme les Ã©vÃ©nements pour enrichir les tÃ¢ches avec les informations utilisateur.
+* **RabbitMQ** : bus de messages utilisÃ© pour la communication inter-services.
 
 ---
 
-## Lancer le projet
+## ðŸš€ Lancer le projet
 
-### En local (dotnet run)
+### Avec Docker Compose
 
 ```bash
-cd TodoList.Server
-dotnet run
+docker-compose up --build
 ```
 
-L’API sera disponible sur :
-[http://localhost:5237/api/todo](http://localhost:5237/api/todo)
-
-### Avec Docker
-
-```bash
-docker build -t todolist-server .
-docker run -d -p 5000:8080 --name todolist-server todolist-server
-```
-
-L’API sera disponible sur :
-[http://localhost:5000/api/todo](http://localhost:5000/api/todo)
+* UserService â†’ [http://localhost:5001/swagger](http://localhost:5001/swagger)
+* TodoService â†’ [http://localhost:5002/swagger](http://localhost:5002/swagger)
+* RabbitMQ Management UI â†’ [http://localhost:15672](http://localhost:15672) (login : `guest`, mot de passe : `guest`)
 
 ---
 
-## Documentation Swagger
+## ðŸ“‘ Endpoints
 
-L’API expose Swagger pour explorer et tester les endpoints
-* local : [http://localhost:5237/swagger](http://localhost:5237/swagger)
-* docker : [http://localhost:5000/swagger](http://localhost:5000/swagger)
+### ðŸ”¹ UserService
+
+#### 1. Ajouter un utilisateur
+
+```
+POST /api/user
+```
+
+**Body (JSON)** :
+
+```json
+{
+  "name": "Alice",
+  "mail": "alice@example.com"
+}
+```
+
+#### 2. Mettre Ã  jour un utilisateur
+
+```
+PUT /api/user/{id}
+```
+
+**Body (JSON)** :
+
+```json
+{
+  "id": "GUID_UTILISATEUR",
+  "name": "Alice Updated",
+  "mail": "alice.new@example.com"
+}
+```
+
+#### 3. RÃ©cupÃ©rer tous les utilisateurs
+
+```
+GET /api/user
+```
 
 ---
 
-## Endpoints
+### ðŸ”¹ TodoService
 
-### 1. Ajouter une tâche
+#### 1. Ajouter une tÃ¢che
 
 ```
 POST /api/todo
@@ -47,88 +76,63 @@ POST /api/todo
 **Body (JSON)** :
 
 ```json
-"Acheter du pain"
-```
-
-**Réponse** :
-
-* `201 Created` avec l’objet `TodoItem` créé.
-
----
-
-### 2. Mettre à jour une tâche
-
-```
-PUT /api/todo
-```
-
-**Body (JSON)** :
-
-```json
 {
-  "id": "GUID_DE_LA_TACHE",
-  "name": "Acheter du pain et du lait",
-  "isDone": true
+  "name": "Acheter du pain",
+  "userId": "GUID_UTILISATEUR"
 }
 ```
 
-**Réponse** :
-
-* `200 OK` avec l’objet `TodoItem` mis à jour
-* `404 Not Found` si l’ID n’existe pas
-
----
-
-### 3. Récupérer toutes les tâches
+#### 2. RÃ©cupÃ©rer toutes les tÃ¢ches
 
 ```
 GET /api/todo
 ```
 
-**Réponse** :
-
-* `200 OK` avec un tableau de `TodoItem`
-
----
-
-### Exemple `TodoItem`
+**RÃ©ponse (JSON)** :
 
 ```json
-{
-  "id": "8a4f9b5c-1c2d-4d34-a3c2-123456789abc",
-  "name": "Acheter du pain",
-  "isDone": false
-}
+[
+  {
+    "id": "GUID_TODO",
+    "name": "Acheter du pain",
+    "isDone": false,
+    "user": {
+      "id": "GUID_UTILISATEUR",
+      "name": "Alice"
+    }
+  }
+]
 ```
 
 ---
 
-## Test rapide avec `curl`
+## âš¡ Test rapide avec `curl`
 
-**Ajouter une tâche** :
+**Ajouter un utilisateur** :
 
 ```bash
-curl -X POST http://localhost:5000/api/todo \
+curl -X POST http://localhost:5001/api/user \
      -H "Content-Type: application/json" \
-     -d "\"Acheter du pain\""
+     -d '{"name":"Alice","mail":"alice@example.com"}'
 ```
 
-**Récupérer toutes les tâches** :
+**Ajouter une tÃ¢che liÃ©e Ã  lâ€™utilisateur** :
 
 ```bash
-curl http://localhost:5000/api/todo
+curl -X POST http://localhost:5002/api/todo \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Acheter du pain","userId":"GUID_UTILISATEUR"}'
 ```
 
-**Mettre à jour une tâche** :
+**Lister les tÃ¢ches** :
 
 ```bash
-curl -X PUT http://localhost:5000/api/todo \
-     -H "Content-Type: application/json" \
-     -d '{"id":"GUID_DE_LA_TACHE","name":"Acheter du lait","isDone":true}'
+curl http://localhost:5002/api/todo
 ```
 
 ---
 
 ## Note
 
-* L’API utilise **InMemoryDatabase**, donc les données disparaissent à chaque redémarrage.
+* Les deux services utilisent **InMemoryDatabase**, donc les donnÃ©es disparaissent Ã  chaque redÃ©marrage.
+* RabbitMQ est requis pour la communication inter-services (via `docker-compose`).
