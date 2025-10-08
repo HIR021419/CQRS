@@ -1,0 +1,59 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.4"
+services:
+  apigateway:
+    build:
+      context: "/Users/luciebouvard/RiderProjects/CQRS"
+      dockerfile: "ApiGateway/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/ApiGateway.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "apigateway:dev"
+    ports: []
+    volumes:
+    - "/Users/luciebouvard/RiderProjects/CQRS/ApiGateway:/app:rw"
+    - "/Users/luciebouvard/RiderProjects/CQRS:/src:rw"
+    - "/Users/luciebouvard/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
+  todoservice:
+    build:
+      context: "/Users/luciebouvard/RiderProjects/CQRS"
+      dockerfile: "TodoService/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/TodoService.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "todoservice:dev"
+    ports: []
+    volumes:
+    - "/Users/luciebouvard/RiderProjects/CQRS/TodoService:/app:rw"
+    - "/Users/luciebouvard/RiderProjects/CQRS:/src:rw"
+    - "/Users/luciebouvard/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
+  userservice:
+    build:
+      context: "/Users/luciebouvard/RiderProjects/CQRS"
+      dockerfile: "UserService/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/UserService.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "userservice:dev"
+    ports: []
+    volumes:
+    - "/Users/luciebouvard/RiderProjects/CQRS/UserService:/app:rw"
+    - "/Users/luciebouvard/RiderProjects/CQRS:/src:rw"
+    - "/Users/luciebouvard/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
