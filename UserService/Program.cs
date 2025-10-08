@@ -1,3 +1,4 @@
+using Common.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using UserService.DataAccess;
 
@@ -16,6 +17,8 @@ namespace UserService
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
+            builder.Services.RegisterConsulServices(builder.Configuration.GetServiceConfig());
 
             var app = builder.Build();
 
@@ -23,6 +26,7 @@ namespace UserService
             app.UseSwaggerUI();
 
             app.MapControllers();
+            app.MapGet("/healthz", () => Results.Ok("Healthy"));
 
             app.Run();
         }

@@ -7,7 +7,11 @@ namespace UserService.Services
 {
     public class MessagePublisher
     {
-        private readonly ConnectionFactory _factory = new ConnectionFactory() { HostName = "rabbitmq" };
+        private readonly ConnectionFactory _factory = new ConnectionFactory() { 
+            HostName = "rabbitmq",
+            UserName = "guest",
+            Password = "guest"
+        };
         private IConnection? _connection = null;
         private IChannel? _channel = null;
         private const string ExchangeName = "user";

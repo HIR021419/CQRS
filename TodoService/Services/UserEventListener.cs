@@ -25,7 +25,11 @@ namespace TodoService.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var factory = new ConnectionFactory() { 
+                HostName = "rabbitmq",
+                UserName = "guest",
+                Password = "guest"
+            };
             _connection = await factory.CreateConnectionAsync(CancellationToken.None);
             _channel = await _connection.CreateChannelAsync();
 

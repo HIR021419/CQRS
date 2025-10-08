@@ -1,3 +1,4 @@
+using Common.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using TodoService.DataAccess;
 using TodoService.Services;
@@ -18,6 +19,8 @@ namespace TodoService
             builder.Services.AddHostedService<UserEventListener>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
+            builder.Services.RegisterConsulServices(builder.Configuration.GetServiceConfig());
 
             var app = builder.Build();
 
@@ -25,6 +28,7 @@ namespace TodoService
             app.UseSwaggerUI();
 
             app.MapControllers();
+            app.MapGet("/healthz", () => Results.Ok("Healthy"));
 
             app.Run();
         }
