@@ -3,9 +3,9 @@ using TodoService.Models;
 
 namespace TodoService.DataAccess
 {
-    public class TodoDbContext : DbContext
+    public class TodoServiceContext : DbContext
     {
-        public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options) {}
+        public TodoServiceContext(DbContextOptions<TodoServiceContext> options) : base(options) {}
         public DbSet<TodoItem> TodoItems { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
     }

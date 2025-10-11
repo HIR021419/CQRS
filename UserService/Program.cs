@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.DataAccess;
+using UserService.Services;
 
 namespace UserService
 {
@@ -9,8 +10,11 @@ namespace UserService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<UserDbContext>(opt =>
+            builder.Services.AddDbContext<UserServiceContext>(opt =>
                 opt.UseInMemoryDatabase("UserDb"));
+            
+            builder.Services.AddSingleton<IntegrationEventSenderService>();
+            builder.Services.AddHostedService(provider => provider.GetService<IntegrationEventSenderService>());
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
             builder.Services.AddControllers();

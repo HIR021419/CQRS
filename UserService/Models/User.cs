@@ -10,6 +10,9 @@ namespace UserService.Models
         [Required]
         public string Name { get; set; } = null!;
 
+        public int Version { get; set; } = 1;
+
+
         public User() { }
 
         public User(string name, string email)

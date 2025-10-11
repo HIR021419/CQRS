@@ -10,7 +10,7 @@ namespace TodoService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<TodoDbContext>(opt =>
+            builder.Services.AddDbContext<TodoServiceContext>(opt =>
                 opt.UseInMemoryDatabase("TodoDb"));
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));

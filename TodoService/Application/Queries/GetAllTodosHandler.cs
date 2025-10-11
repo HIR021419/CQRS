@@ -7,9 +7,9 @@ namespace TodoService.Application.Queries
 {
     public class GetAllTodosHandler : IRequestHandler<GetAllTodosQuery, IEnumerable<TodoItem>>
     {
-        private readonly TodoDbContext _repository;
+        private readonly TodoServiceContext _repository;
 
-        public GetAllTodosHandler(TodoDbContext repository)
+        public GetAllTodosHandler(TodoServiceContext repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }

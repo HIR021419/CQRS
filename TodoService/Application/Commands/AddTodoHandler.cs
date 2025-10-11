@@ -6,9 +6,9 @@ namespace TodoService.Application.Commands
 {
     public class AddTodoHandler : IRequestHandler<AddTodoCommand, TodoItem>
     {
-        private readonly TodoDbContext _repository;
+        private readonly TodoServiceContext _repository;
 
-        public AddTodoHandler(TodoDbContext repository)
+        public AddTodoHandler(TodoServiceContext repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }

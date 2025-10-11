@@ -3,30 +3,48 @@ using Microsoft.AspNetCore.Mvc;
 using TodoService.Application.Commands;
 using TodoService.Application.Queries;
 using TodoService.Models;
+using Microsoft.EntityFrameworkCore;
+using TodoService.DataAccess;
 
-namespace TodoList.Server.Controllers
+namespace TodoService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TodoController(IMediator mediator) : Controller
+    public class TodoController : ControllerBase
     {
-        private  readonly IMediator _mediator = mediator;
+        private readonly IMediator _mediator;
+        private readonly TodoServiceContext _context;
+
+        public TodoController(IMediator mediator, TodoServiceContext context)
+        {
+            _mediator = mediator;
+            _context = context;
+        }
 
         [HttpPost]
         public async Task<ActionResult<TodoItem>> AddTodo([FromBody] AddTodoCommand command)
         {
-            if (string.IsNullOrWhiteSpace(command.Name))
-                return BadRequest("Name and UserID are required.");
+            Guid userId = new Guid(command.UserID);
+            if (string.IsNullOrWhiteSpace(command.Name) || userId == Guid.Empty)
+                return BadRequest("Name and UserId are required.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return BadRequest("Associated User does not exist in local database.");
 
             var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAll), result);
+            return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<TodoItem>> Update([FromBody] TodoItem item)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<TodoItem>> Update(Guid id, [FromBody] TodoItem item)
         {
+            if (id != item.Id)
+                return BadRequest("Mismatched Todo ID");
+
             var updated = await _mediator.Send(new UpdateTodoCommand(item));
             if (updated == null) return NotFound();
+
             return Ok(updated);
         }
 
@@ -35,6 +53,14 @@ namespace TodoList.Server.Controllers
         {
             var items = await _mediator.Send(new GetAllTodosQuery());
             return Ok(items);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TodoItem>> GetById(Guid id)
+        {
+            var item = await _context.TodoItems.FindAsync(id);
+            if (item == null) return NotFound();
+            return Ok(item);
         }
     }
 }
