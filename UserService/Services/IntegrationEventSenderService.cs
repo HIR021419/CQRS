@@ -1,6 +1,12 @@
+using System;
 using RabbitMQ.Client;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using UserService.DataAccess;
 
 namespace UserService.Services;

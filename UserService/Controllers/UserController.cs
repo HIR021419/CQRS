@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserService.DataAccess;
 using UserService.Models;
 using UserService.Services;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace UserService.Controllers
 {

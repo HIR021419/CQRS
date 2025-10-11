@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace UserService.Services
 {

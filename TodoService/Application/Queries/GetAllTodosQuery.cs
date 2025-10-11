@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using TodoService.Models;
 
 namespace TodoService.Application.Queries
